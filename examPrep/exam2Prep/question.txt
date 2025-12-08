@@ -1,0 +1,26 @@
+For this question, you will implement a portion of the "head" utility in Unix systems.  We'll call our version "myhead" to avoid confusion.
+
+A Makefile, starter code, and 3 sample text files are provided for you.
+
+To compile your code, you can just type `make`.
+
+Three different test cases are provided for you called test1, test2, and test3 in the Makefile.  The points for each case is listed in the Makefile.
+
+To test all 3 cases, you can just type `make testall`.  The file expected_output.txt shows the result of typing `make testall` if you have a completely working project.
+
+
+=====================
+PROGRAM SPECIFICATION
+=====================
+
+The myhead program prints out the first 10 lines of each file that is passed to it, or less if the file does not have 10 lines.
+
+If a single file is specified, only the lines should be printed.  However, if there are 2 or more files specified, each should be prefaced by a line with the filename, formatted like so:
+
+==> filename <==
+
+If the user specifies -n as the first argument, read the following argument and parse it to determine how many lines to display instead of the default of 10.  For instance, `myhead -n 1 a.txt` will display just the first line of file a.txt.  (For simplicity's sake, you make assume that the "-n" flag will show up as the first argument.)
+
+
+When you are finished, submit your solution to Canvas.
+

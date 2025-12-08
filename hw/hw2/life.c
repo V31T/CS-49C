@@ -106,6 +106,16 @@ void run_simulation(int height, int width, char grid[][width], unsigned sleep_ti
     // On a loop, clear the screen, display the grid, sleep, and update the grid
     // with the new live/dead information based on the previous state of the grid.
     // (You might need to make a copy of the grid.)
+    //
+
+    // NOTE: pdate_grid already makes a local copy internally (out[][]),
+    // so we can call it directly without copying here.
+    while (true) {
+        clear_screen();               // clear old frame
+        display_grid(height, width, grid); // print current frame
+        usleep(sleep_time);           // pause so we can see it (time in microseconds)
+        update_grid(height, width, grid);  // compute next frame
+    }
 }
 
 /**
@@ -121,6 +131,16 @@ void rand_fill(int height, int width, char grid[][width]) {
     //
     // Remember to seed your random function.
     //
+    // Seed once (time-based). Doing it here is fine since rand_fill
+    // is called once from main for the random-mode.
+    srand((unsigned) time(NULL)); // seed RNG, otherwise it's the same every run — boring
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            // 50/50 chance of alive (1) or dead (0)
+            grid[i][j] = (rand() % 2) ? 1 : 0;
+        }
+    }
 }
 
 /**
@@ -137,6 +157,52 @@ void calc_grid_dimensions(int* height, int* width, char* file_name) {
     // the width.  Ignore whitespace.
     //
     // For height, only count the lines where there is at lease one valid character.
+    //
+    FILE* fp = fopen(file_name, "r");
+    if (fp == NULL) {
+        perror("Error opening pattern file");
+        exit(1);
+    }
+
+    int max_width = 0;
+    int curr_count = 0;
+    int h = 0;
+    int ch;
+    bool line_has_valid = false;
+
+    while ((ch = fgetc(fp)) != EOF) {
+        if (ch == '\n') {
+            if (line_has_valid) {
+                h++;
+                if (curr_count > max_width) max_width = curr_count;
+            }
+            // reset counters for next line
+            curr_count = 0;
+            line_has_valid = false;
+        } else {
+            // consider only '.' '*' 'X' 'O' as valid pattern chars
+            if (ch == '.' || ch == '*' || ch == 'X' || ch == 'O') {
+                curr_count++;
+                line_has_valid = true;
+            } else {
+                // ignore everything else (whitespace or other symbols)
+            }
+        }
+        
+    }
+
+    // handle last line if file didn't end with newline
+    if (line_has_valid) {
+        h++;
+        if (curr_count > max_width) max_width = curr_count;
+    }
+
+    fclose(fp);
+
+    *height = h;
+    *width = max_width;
+
+    printf("width: %d \nheight: %d", *width, *height);
 }
 
 /**
@@ -152,6 +218,56 @@ void read_grid(char* file_name, int height, int width, char grid[][width]) {
     //
     // Read through the file and set the initial statue of each cell in the
     // grid to match the pattern, as specified in the comment on this method.
+    //
+    // fill rows left-to-right. If a row has fewer valid chars than
+    // width, remaining cells become dead. If a row has more, extras are ignored.
+    //
+
+    // initialize everything dead first (helps with short rows)
+    for (int i = 0; i < height; i++)
+        for (int j = 0; j < width; j++)
+            grid[i][j] = 0;
+
+    FILE* fp = fopen(file_name, "r");
+    if (fp == NULL) {
+        perror("Error opening pattern file");
+        exit(1);
+    }
+
+    int row = 0;
+    int col = 0;
+    int ch;
+    while ((ch = fgetc(fp)) != EOF && row < height) {
+        if (ch == '\n') {
+            // move to next row if this row had any progress, or even if empty
+            if (col > 0 || col == 0) {
+                // make sure to fill rest with dead (already done)
+                row++;
+                col = 0;
+            }
+        } else if (ch == '.' || ch == '*' || ch == 'X' || ch == 'O') {
+            if (col < width) {
+                if (ch == '.' ) {
+                    grid[row][col] = 0;
+                } else {
+                    // 'X', 'O', '*' counted as alive
+                    grid[row][col] = 1;
+                }
+            }
+            col++;
+            // ignore extra valid chars beyond width
+        } else {
+            // ignore other chars (spaces, tabs, etc.)
+        }
+    }
+
+    // if file didn't end with newline but we populated a row, advance row
+    // (no need to fill remaining cells; already set to 0 at start)
+    if (col > 0 && row < height) {
+        row++;
+    }
+
+    fclose(fp);
 }
 
 /**
@@ -247,4 +363,3 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
-

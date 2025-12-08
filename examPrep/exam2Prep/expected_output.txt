@@ -1,0 +1,86 @@
+cc myhead.c -o myhead
+*****Testing basic case (worth 14 points)
+./myhead shakespeare-caesar.txt
+[The Tragedie of Julius Caesar by William Shakespeare 1599]
+
+
+Actus Primus. Scoena Prima.
+
+Enter Flauius, Murellus, and certaine Commoners ouer the Stage.
+
+  Flauius. Hence: home you idle Creatures, get you home:
+Is this a Holiday? What, know you not
+(Being Mechanicall) you ought not walke
+./myhead short-file.txt
+This file just has one line.
+*****Testing intermediate case (worth 4 points)
+./myhead shakespeare-caesar.txt shakespeare-hamlet.txt shakespeare-macbeth.txt
+==> shakespeare-caesar.txt <==
+[The Tragedie of Julius Caesar by William Shakespeare 1599]
+
+
+Actus Primus. Scoena Prima.
+
+Enter Flauius, Murellus, and certaine Commoners ouer the Stage.
+
+  Flauius. Hence: home you idle Creatures, get you home:
+Is this a Holiday? What, know you not
+(Being Mechanicall) you ought not walke
+
+==> shakespeare-hamlet.txt <==
+[The Tragedie of Hamlet by William Shakespeare 1599]
+
+
+Actus Primus. Scoena Prima.
+
+Enter Barnardo and Francisco two Centinels.
+
+  Barnardo. Who's there?
+  Fran. Nay answer me: Stand & vnfold
+your selfe
+
+==> shakespeare-macbeth.txt <==
+[The Tragedie of Macbeth by William Shakespeare 1603]
+
+
+Actus Primus. Scoena Prima.
+
+Thunder and Lightning. Enter three Witches.
+
+  1. When shall we three meet againe?
+In Thunder, Lightning, or in Raine?
+  2. When the Hurley-burley's done,
+
+./myhead -n 20 shakespeare-caesar.txt
+[The Tragedie of Julius Caesar by William Shakespeare 1599]
+
+
+Actus Primus. Scoena Prima.
+
+Enter Flauius, Murellus, and certaine Commoners ouer the Stage.
+
+  Flauius. Hence: home you idle Creatures, get you home:
+Is this a Holiday? What, know you not
+(Being Mechanicall) you ought not walke
+Vpon a labouring day, without the signe
+Of your Profession? Speake, what Trade art thou?
+  Car. Why Sir, a Carpenter
+
+   Mur. Where is thy Leather Apron, and thy Rule?
+What dost thou with thy best Apparrell on?
+You sir, what Trade are you?
+  Cobl. Truely Sir, in respect of a fine Workman, I am
+but as you would say, a Cobler
+
+*****Testing advanced case (worth 2 points)
+./myhead -n 1 shakespeare-caesar.txt shakespeare-hamlet.txt shakespeare-macbeth.txt
+==> shakespeare-caesar.txt <==
+[The Tragedie of Julius Caesar by William Shakespeare 1599]
+
+==> shakespeare-hamlet.txt <==
+[The Tragedie of Hamlet by William Shakespeare 1599]
+
+==> shakespeare-macbeth.txt <==
+[The Tragedie of Macbeth by William Shakespeare 1603]
+
+*****Testing complete
